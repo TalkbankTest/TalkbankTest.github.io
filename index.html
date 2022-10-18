@@ -84,7 +84,6 @@ input {
   border: 1px solid #aaaaaa;
 }
 /* input[type=range]::before {
-
   content: "0";
 }
 input[type=range]::after {
@@ -262,8 +261,7 @@ button {
 <section class="forms">
 <form id="regForm" class="g-form">
   <div class="progressbar">
-    <span class="step"></span>
-    <span class="step"></span>
+    <span class="step finish"></span>
     <span class="step"></span>
     <span class="step"></span>
     <span class="step"></span>
@@ -315,6 +313,7 @@ button {
       <option value="Development office">Development office</option>
       <option value="HR">HR</option>
       <option value="Finance">Finance</option>
+      <option value="Candidate">Candidate</option>
     </select></p>
     <p><select name="Руководитель">
       <option selected value="example">Выбери руководителя</option>
@@ -327,6 +326,7 @@ button {
       <option value="Александр Бессонов">Александр Бессонов</option>
       <option value="Светлана Попова">Светлана Попова</option>
       <option value="Николай Илюткин">Николай Илюткин</option>
+      <option value="Кандидат">Кандидат</option>
     </select></p>
   </div>
 <!-- Вопрос 1 -->
@@ -625,20 +625,21 @@ button {
     <p><label>c) возможность устанавливать хорошие взаимоотношения с коллегами;<input type="range" min="0" max="11" value="0" name="c33" class="slider"oninput="c33r.value=parseInt(c33.value)"/></label><output name="c33r">0</output></p>
     <p><label>d) наличие значимых целей, которых призван достичь работник.<input type="range" min="0" max="11" value="0" name="d33" class="slider" oninput="d33r.value=parseInt(d33.value)"/></label><output name="d33r">0</output></p>
     <p><div class="summa"></div></p>
+    <div class="g-form__button-wrapper">
+      <button class="g-form__button" onclick="nextPrev(1);" style="float:right;">Завершить тест</button>  
+    </div>
   </div>
   <!-- Конец -->
   <div class="tab">
     <div class="successform" style="color:#149b9e;"></div>
     <p>Спасибо, что уделили время нашему тесту, ожидайте результатов!</p>
-    <div class="g-form__button-wrapper">
-    <button class="g-form__button" onclick="successform()" style="float:right;">Завершить тест</button>  
-  </div>
+   
   
   </div>
   <div style="overflow:auto;">
     <div style="float:right;">
       <button type="button" id="prevBtn" onclick="nextPrev(-1)">Предыдущий вопрос</button>
-      <button type="button" id="nextBtn" onclick="nextPrev(1)" >Next</button>
+      <button type="button" id="nextBtn" onclick="nextPrev(1)" class="g-form__button" >Next</button>
      
     </div>
   </div>
@@ -656,11 +657,12 @@ function showTab(n) {
   x[n].style.display = "block";
   //... and fix the Previous/Next buttons:
   if (n == 0) {
-    document.getElementById("prevBtn").style.display = "none";
-  } else {
+    document.getElementById("prevBtn").style.display = "none";}
+  else if (n >= (x.length - 1)) {document.getElementById("prevBtn").style.display = "none";}
+   else {
     document.getElementById("prevBtn").style.display = "inline";
   }
-  if (n == (x.length - 1)) {
+  if (n >= (x.length - 2)) {
     document.getElementById("nextBtn").style.display = "none";
   } else {
     document.getElementById("nextBtn").innerHTML = "Следующий вопрос";
@@ -721,18 +723,12 @@ function validateForm() {
         valid = false;
       }
       }
-      // for (i = 0; i < z.length; i++){
-      //   valid = true;
-      //   if(z[i].selected.value == "example"){
-      //     valid = false;
-      //   }
-      // }
   }
 
 
   // If the valid status is true, mark the step as finished and valid:
   if (valid) {
-    document.getElementsByClassName("step")[currentTab].className += " finish";
+    document.getElementsByClassName("step")[currentTab+1].className += " finish";
   }
   return valid; // return the valid status
 }
@@ -747,10 +743,13 @@ function fixStepIndicator(n) {
   //... and adds the "active" class on the current step:
   x[n].className += " active";
 }
-function successform() {
+function successform(n) {
     var x, res;
     x = document.getElementsByClassName("tab");
     res = x[currentTab].querySelector(".successform").innerHTML = 'Данные успешно отправлены';
+  x[currentTab].style.display = "none";
+  currentTab = currentTab + n;
+  showTab(currentTab);
 }
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -848,6 +847,3 @@ function successform() {
 
 </body>
 </html>
-
-
-
